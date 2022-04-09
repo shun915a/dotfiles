@@ -1,0 +1,25 @@
+### all ignore ###
+/*
+/.**
+
+!README.md
+!.gitignore
+!.config/
+
+!.config/karabiner/
+!.config/karabiner/**
+.config/karabiner/automatic_backups
+
+!.config/nvim/
+!.config/nvim/**
+.config/nvim/sessions/
+.config/nvim/.netrwhist
+
+!.config/git/
+!.config/git/ignore
+!.config/git/config
+
+!.zshrc
+!install.sh
+
+.DS_Store
