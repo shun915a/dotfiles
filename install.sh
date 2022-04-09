@@ -47,6 +47,8 @@ do
     [ "$f" = ".gitignore" ] && continue
 
     ln -snfv "$DOTPATH/$f" "$HOME/$f"
+    echo "$DOTPATH/$f"
+    echo "$HOME/$f"
 done
 
 echo ">> installed dotfiles"
