@@ -1,4 +1,4 @@
-#!/usr/bin/bash
+#!/bin/sh
 
 function has() {
     type "$1" &>/dev/null
