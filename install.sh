@@ -1,57 +1,45 @@
-#!/bin/sh
+#!/bin/bash
 
-function has() {
-    type "$1" &>/dev/null
+DOT_DIR="$HOME/dotfiles"
+
+has() {
+    type "$1" > /dev/null 2>&1
 }
 
-function git_clone() {
+if [ ! -d ${DOT_DIR} ]; then
     if has "git"; then
-        git clone --recursive "$1" "$2"
-
+        git clone https://github.com/shun915a/dotfiles.git ${DOT_DIR}
     elif has "curl" || has "wget"; then
-        tarball="$GITHUB_URL/archive/master.tar.gz"
-
-        mkdir -p "$2"
+        TARBALL="https://github.com/shun915a/dotfiles/archive/master.tar.gz"
         if has "curl"; then
-            curl -L "$tarball"
-
-        elif has "wget"; then
-            wget -O - "$tarball"
-
-        fi | tar zxvf -C "$2" --strip-components=1
-
+            curl -L ${TARBALL} -o master.tar.gz
+        else
+            wget ${TARBALL}
+        fi
+        tar -zxvf master.tar.gz
+        rm -f master.tar.gz
+        mv -f dotfiles-master "${DOT_DIR}"
     else
-        echo "git or curl or wget required"
-        exit 1;
+        echo "curl or wget or git required"
+        exit 1
     fi
-}
 
-############
-# dotfiles #
-############
+    cd ${DOT_DIR}
+    for f in *;
+    do
+        [[ "$f" == ".git" ]] && continue
+        [[ "$f" == ".gitignore" ]] && continue
+        [[ "$f" == ".DS_Store" ]] && continue
+        [[ "$f" == "README.md" ]] && continue
+        [[ "$f" == "install.sh" ]] && continue
 
-DOTPATH=$HOME/dotfiles
-GITHUB_URL="https://github.com/shun915a/dotfiles"
-
-git_clone "$GITHUB_URL" "$DOTPATH"
-
-cd $DOTPATH
-if [ $? -ne 0 ]; then
-    echo "not found: $DOTPATH"
-    exit 1;
+        ln -snf $DOT_DIR/"$f" $HOME/".$f"
+        echo "Installed .$f"
+    done
+else
+    echo "dotfiles already exists"
+    exit 1
 fi
-
-for f in .??*
-do
-    [ "$f" = ".git" ] && continue
-    [ "$f" = ".gitignore" ] && continue
-
-    ln -snfv "$DOTPATH/$f" "$HOME/$f"
-    echo "$DOTPATH/$f"
-    echo "$HOME/$f"
-done
-
-echo ">> installed dotfiles"
 
 ########
 # dein #
