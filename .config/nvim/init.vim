@@ -32,6 +32,7 @@ if dein#load_state('~/.cache/dein')
   call dein#add('ryanoasis/vim-devicons')
   " Remove once https://github.com/ryanoasis/vim-devicons/issues/296 is completed
   call dein#add('kristijanhusak/defx-icons')
+  call dein#add('neoclide/coc.nvim', {'merged':0, 'rev': 'release'})
 
   if !has('nvim')
     call dein#add('roxma/nvim-yarp')
@@ -57,12 +58,18 @@ if dein#load_state('~/.cache/dein')
   call dein#add('tpope/vim-endwise', { 'on_ft': ['ruby'] })
   call dein#add('tpope/vim-rails', { 'on_ft': ['ruby'] })
 
+  " Protocol Buffer
+  call dein#add('uarun/vim-protobuf')
+
+  " Status/Tabline
+  call dein#add('vim-airline/vim-airline')
+
   call dein#end()
   call dein#save_state()
 endif
 
 if dein#check_install()
-  call dein＃install()
+  call dein#install()
 endif
 
 syntax enable
@@ -88,9 +95,13 @@ set splitright
 " Indent
 set autoindent
 
-" auto insert
+" Auto insert
 set smartindent
 set expandtab
+
+" Move selected block
+vnoremap J :m '>+1<CR>gv=gv
+vnoremap K :m '<-2<CR>gv=gv
 
 if has("autocmd")
   filetype plugin on
@@ -140,6 +151,25 @@ endif
 " turn off auto indent when leaving from insert mode
 autocmd InsertLeave * set nopaste
 
+" Search
+nmap <leader>hl :set hlsearch! hlsearch?<cr>
+" hit Cap letters even when searching with non Cap
+set ignorecase
+" distinct Cap and none Cap when searching with Cap and none combined
+set smartcase
+" instant search with enter after the word
+set incsearch
+" stop at the end of the file
+set nowrapscan
+
+" airline
+" https://github.com/vim-airline/vim-airline/blob/26f922753a288df639b8d05d13ed62b9b04a26bc/doc/airline.txt#L440-L444
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_section_b = '%-0.10{getcwd()}'
+let g:airline_section_c = '%t'
+
+" Defx
+nmap <silent><c-f><c-f> :Defx `expand('%:p:h')` -search=`expand('%:p')` -show-ignored-files -columns=icons:indent:filename:type -buffer-name=`'defx' . tabpagenr()`<cr>
 autocmd FileType defx call s:defx_my_settings()
 
 function! s:defx_my_settings() abort
@@ -228,3 +258,50 @@ call defx#custom#column('git', 'indicators', {
   \ 'Deleted'   : '✖',
   \ 'Unknown'   : '?'
   \ })
+
+" Denite
+call denite#custom#option('_', 'statusline', v:false) " Disabling internal statusline
+autocmd FileType denite call s:denite_my_settings()
+function! s:denite_my_settings() abort
+  nnoremap <silent><buffer><expr> <cr>
+        \ denite#do_map('do_action')
+  nnoremap <silent><buffer><expr> <leader>vs
+        \ denite#do_map('do_action', 'vsplit')
+  nnoremap <silent><buffer><expr> d
+        \ denite#do_map('do_action', 'delete')
+  nnoremap <silent><buffer><expr> p
+        \ denite#do_map('do_action', 'preview')
+  nnoremap <silent><buffer><expr> q
+        \ denite#do_map('quit')
+  nnoremap <silent><buffer><expr> i
+        \ denite#do_map('open_filter_buffer')
+  nnoremap <silent><buffer><expr> s
+        \ denite#do_map('toggle_select')
+  nnoremap <silent><buffer><c-b>
+        \ :<c-u>call <SID>denite_quickfix()<cr>
+endfunction
+" https://github.com/Shougo/denite.nvim/commit/3c7f0e1c1567d9338dea86ee190766ec64f1f510
+function! s:denite_quickfix()
+  call denite#call_map('toggle_select_all')
+  call denite#call_map('do_action', 'quickfix')
+endfunction
+
+nmap <silent><c-p> :Denite file/rec<cr>
+nmap <silent><leader>b :Denite buffer<cr>
+nmap <silent><leader>m :Denite file_mru<cr>
+nmap <silent><leader>f :Denite grep -post-action=open<cr>
+nmap <silent><leader>wf :DeniteCursorWord grep -post-action=open<cr>
+nmap <silent><leader>y :Denite neoyank<cr>
+call denite#custom#option('_', 'max_dynamic_update_candidates', 200000)
+call denite#custom#option('_', 'start_filter', 'true')
+call denite#custom#var('file/rec', 'command', ['ag', '--hidden', '--follow', '--nogroup', '-g', ''])
+call denite#custom#var('grep', {
+      \ 'command': ['ag'],
+      \ 'default_opts': [],
+      \ 'recursive_opts': [],
+      \ 'pattern_opt': [],
+      \ 'final_opts': [],
+      \ })
+" call denite#custom#source('grep', 'args', ['', '', '!']) " intereactive mode
+call denite#custom#source('grep', 'converters', ['converter/abbr_word']) " narrow by path in grep source.
+
