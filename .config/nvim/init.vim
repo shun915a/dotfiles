@@ -63,6 +63,7 @@ if dein#load_state('~/.cache/dein')
 
   " Status/Tabline
   call dein#add('vim-airline/vim-airline')
+  call dein#add('vim-airline/vim-airline-themes')
 
   call dein#end()
   call dein#save_state()
