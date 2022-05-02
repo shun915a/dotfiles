@@ -3,34 +3,32 @@ if &compatible
 endif
 
 set runtimepath+=~/.cache/dein/repos/github.com/Shougo/dein.vim
+let $LANG='en_US.UTF-8'
 
 if dein#load_state('~/.cache/dein')
   call dein#begin('~/.cache/dein')
-
-  " Basics
   call dein#add('~/.cache/dein/repos/github.com/Shougo/dein.vim')
+
+  let s:toml_dir = expand('~/.config/nvim/dein')
+  call dein#load_toml(s:toml_dir . '/plugins.toml', {'lazy': 0})
+  call dein#load_toml(s:toml_dir . '/style.toml', {'lazy': 0})
+  call dein#load_toml(s:toml_dir . '/lsp.toml', {'lazy': 0})
+  call dein#load_toml(s:toml_dir . '/snippets.toml', {'lazy': 0})
+  call dein#load_toml(s:toml_dir . '/lazy.toml', {'lazy': 1})
+  call dein#load_toml(s:toml_dir . '/javascript.toml', {'lazy': 1})
+  call dein#load_toml(s:toml_dir . '/ruby.toml', {'lazy': 1})
+  call dein#load_toml(s:toml_dir . '/toml.toml', {'lazy': 1})
+
   call dein#add('Shougo/deoplete.nvim')
-  call dein#add('github/copilot.vim')
-  " https://github.com/Shougo/deoplete.nvim/blob/18788fc822abd1ac1ffc1a8189afbfae15d06cf9/doc/deoplete.txt#L1793-L1796
   call dein#add('ncm2/float-preview.nvim')
-  " https://github.com/Shougo/deoplete.nvim/blob/18788fc822abd1ac1ffc1a8189afbfae15d06cf9/doc/deoplete.txt#L1682-L1686
   call dein#add('Shougo/echodoc.vim')
-  call dein#add('neovim/nvim-lspconfig')
-  call dein#add('Shougo/deoplete-lsp')
-  " https://github.com/neovim/nvim-lspconfig/issues/69
   call dein#add('onsails/diaglist.nvim')
   call dein#add('Shougo/Denite.nvim')
   call dein#add('Shougo/neoyank.vim')
   call dein#add('Shougo/neomru.vim')
   call dein#add('Shougo/defx.nvim')
-  call dein#add('tpope/vim-dispatch')
-  call dein#add('vim-test/vim-test')
   call dein#add('tyru/open-browser.vim')
-  call dein#add('kana/vim-textobj-user')
-  call dein#add('bkad/CamelCaseMotion')
-  call dein#add('pbrisbin/vim-mkdir')
   call dein#add('ryanoasis/vim-devicons')
-  " Remove once https://github.com/ryanoasis/vim-devicons/issues/296 is completed
   call dein#add('kristijanhusak/defx-icons')
   call dein#add('neoclide/coc.nvim', {'merged':0, 'rev': 'release'})
 
@@ -39,31 +37,7 @@ if dein#load_state('~/.cache/dein')
     call dein#add('roxma/vim-hug-neovim-rpc')
   end
 
-  " Snippets
-  call dein#add('Shougo/neosnippet.vim')
-  call dein#add('Shougo/neosnippet-snippets')
-
-  " Editing
-  call dein#add('tpope/vim-commentary')
-  call dein#add('jiangmiao/auto-pairs')
-  call dein#add('tpope/vim-surround')
-  call dein#add('AndrewRadev/switch.vim')
-  call dein#add('junegunn/vim-easy-align')
   call dein#add('tpope/vim-abolish')
-
-  " JavaScript
-  call dein#add('pangloss/vim-javascript', { 'on_ft': ['javascript'] })
-
-  " Ruby/Rails
-  call dein#add('tpope/vim-endwise', { 'on_ft': ['ruby'] })
-  call dein#add('tpope/vim-rails', { 'on_ft': ['ruby'] })
-
-  " Protocol Buffer
-  call dein#add('uarun/vim-protobuf')
-
-  " Status/Tabline
-  call dein#add('vim-airline/vim-airline')
-  call dein#add('vim-airline/vim-airline-themes')
 
   call dein#end()
   call dein#save_state()
@@ -261,6 +235,7 @@ call defx#custom#column('git', 'indicators', {
   \ })
 
 " Denite
+let g:python3_host_prog = '/usr/local/bin/python3'
 call denite#custom#option('_', 'statusline', v:false) " Disabling internal statusline
 autocmd FileType denite call s:denite_my_settings()
 function! s:denite_my_settings() abort

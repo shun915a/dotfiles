@@ -1,0 +1,44 @@
+[[plugins]]
+repo = 'tpope/vim-commentary'
+# https://zenn.dev/altair/articles/9238308d2432c6
+
+[[plugins]]
+repo = 'cohama/lexima.vim'
+hook_add = '''
+autocmd FileType TelescopePrompt let b:lexima_disabled = 1
+'''
+# https://qiita.com/pepo/items/60c3ddb8925e49808a76
+
+[[plugins]]
+repo = 'machakann/vim-sandwich'
+# https://machakann.hatenablog.com/entry/2015/07/25/205921
+
+[[plugins]]
+repo = 'bronson/vim-trailing-whitespace'
+
+[[plugins]]
+repo = 'Yggdroot/indentLine'
+hook_add = '''
+  autocmd user indentline doautocmd indentline syntax
+'''
+
+[[plugins]]
+repo =  'editorconfig/editorconfig-vim'
+hook_add = '''
+  let g:EditorConfig_verbose=1
+'''
+
+[[plugins]]
+repo = 'vim-scripts/camelcasemotion'
+hook_add = '''
+  map w <Plug>CamelCaseMotion_w
+  map b <Plug>CamelCaseMotion_b
+  map e <Plug>CamelCaseMotion_e
+  sunmap w
+  sunmap b
+  sunmap e
+'''
+
+[[plugins]]
+repo = 'antoinemadec/FixCursorHold.nvim'
+

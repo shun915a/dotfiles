@@ -1,0 +1,4 @@
+[[plugins]]
+repo = 'pangloss/vim-javascript'
+on_ft = 'javascript'
+
