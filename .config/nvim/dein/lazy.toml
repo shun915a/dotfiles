@@ -1,0 +1,10 @@
+[[plugins]]
+repo='janko/vim-test'
+on_cmd = ['TestNearest', 'TestSuite', 'TestFile', 'TestLast', 'TestVisit']
+on_map = ['<C-t>']
+depends = ['asyncrun.vim']
+hook_source = '''
+  nmap <C-t> :TestNearest<CR>
+  let g:test#strategy = "asyncrun"
+'''
+
