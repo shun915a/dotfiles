@@ -1,6 +1,7 @@
 eval "$(starship init zsh)"
 source /usr/local/share/zsh-autosuggestions/zsh-autosuggestions.zsh
 
+
 # zsh-completions
 
 if [ -e /usr/local/share/zsh-completions ]; then
@@ -12,7 +13,6 @@ compinit -u
 
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 zstyle ':completion:*:default' menu select
-
 
 
 # alias
@@ -32,6 +32,11 @@ alias gh='hub browse $(ghq list | peco | cut -d "/" -f 2,3)'
 
 
 
+# node
+
+export PATH=$HOME/.nodebrew/current/bin:$PATH
+
+
 # rbenv
 
 export PATH="$HOME/.rbenv/bin:$PATH"
@@ -41,3 +46,4 @@ eval "$(rbenv init -)"
 plugins=(
     zsh-autosuggestions
 )
+
