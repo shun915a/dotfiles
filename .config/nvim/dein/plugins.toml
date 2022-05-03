@@ -39,6 +39,3 @@ hook_add = '''
   sunmap e
 '''
 
-[[plugins]]
-repo = 'antoinemadec/FixCursorHold.nvim'
-
