@@ -5,8 +5,5 @@ repo = 'prabirshrestha/vim-lsp'
 repo = 'mattn/vim-lsp-settings'
 
 [[plugins]]
-repo = 'Shougo/ddc.vim'
-
-[[plugins]]
 repo = 'vim-denops/denops.vim'
 
