@@ -12,6 +12,10 @@ if dein#load_state('~/.cache/dein')
   let s:toml_dir = expand('~/.config/nvim/dein')
   call dein#load_toml(s:toml_dir . '/plugins.toml', {'lazy': 0})
   call dein#load_toml(s:toml_dir . '/style.toml', {'lazy': 0})
+  call dein#load_toml(s:toml_dir . '/javascript.toml', {'lazy': 1})
+
+  call dein#add('junegunn/fzf', { 'build': './install --all', 'merged': 0 })
+  call dein#add('yuki-yano/fzf-preview.vim', { 'rev': 'release/rpc' })
 
   call dein#end()
   call dein#save_state()
@@ -86,4 +90,10 @@ set autoindent
 " Auto insert
 set smartindent
 set expandtab
+
+" Show hidden files
+let g:fern#default_hidden=1
+
+" Show file tree with Ctrl+n
+nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 

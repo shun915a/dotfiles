@@ -39,3 +39,5 @@ hook_add = '''
   sunmap e
 '''
 
+[[plugins]]
+repo = 'lambdalisue/fern.vim'
