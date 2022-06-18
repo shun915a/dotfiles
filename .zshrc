@@ -47,3 +47,5 @@ plugins=(
     zsh-autosuggestions
 )
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
