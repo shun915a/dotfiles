@@ -23,6 +23,7 @@ alias vi=nvim
 alias viz='vi ~/.zshrc'
 alias viv='vi ~/.config/nvim/init.vim'
 alias be='bundle exec'
+alias wup='git add -A && git commit --allow-empty-message -m ""'
 
 
 # ghq peco hub
@@ -47,3 +48,5 @@ plugins=(
     zsh-autosuggestions
 )
 
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh

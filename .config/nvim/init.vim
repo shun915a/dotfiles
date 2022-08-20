@@ -12,32 +12,10 @@ if dein#load_state('~/.cache/dein')
   let s:toml_dir = expand('~/.config/nvim/dein')
   call dein#load_toml(s:toml_dir . '/plugins.toml', {'lazy': 0})
   call dein#load_toml(s:toml_dir . '/style.toml', {'lazy': 0})
-  " call dein#load_toml(s:toml_dir . '/lsp.toml', {'lazy': 0})
-  call dein#load_toml(s:toml_dir . '/snippets.toml', {'lazy': 0})
-  call dein#load_toml(s:toml_dir . '/lazy.toml', {'lazy': 1})
-  call dein#load_toml(s:toml_dir . '/html.toml', {'lazy': 1})
   call dein#load_toml(s:toml_dir . '/javascript.toml', {'lazy': 1})
-  call dein#load_toml(s:toml_dir . '/ruby.toml', {'lazy': 1})
-  call dein#load_toml(s:toml_dir . '/toml.toml', {'lazy': 1})
 
-  call dein#add('ncm2/float-preview.nvim')
-  call dein#add('Shougo/echodoc.vim')
-  call dein#add('onsails/diaglist.nvim')
-  call dein#add('Shougo/Denite.nvim')
-  call dein#add('Shougo/neoyank.vim')
-  call dein#add('Shougo/neomru.vim')
-  call dein#add('Shougo/defx.nvim')
-  call dein#add('tyru/open-browser.vim')
-  call dein#add('ryanoasis/vim-devicons')
-  call dein#add('kristijanhusak/defx-icons')
-  " call dein#add('neoclide/coc.nvim', {'merged':0, 'rev': 'release'})
-
-  if !has('nvim')
-    call dein#add('roxma/nvim-yarp')
-    call dein#add('roxma/vim-hug-neovim-rpc')
-  end
-
-  call dein#add('tpope/vim-abolish')
+  call dein#add('junegunn/fzf', { 'build': './install --all', 'merged': 0 })
+  call dein#add('yuki-yano/fzf-preview.vim', { 'rev': 'release/rpc' })
 
   call dein#end()
   call dein#save_state()
@@ -49,23 +27,63 @@ endif
 
 syntax enable
 
-" Basics
-set completeopt-=preview " Disabling preview window
+" airline
+let g:airline#extensions#tabline#enabled = 1
+let g:airline_section_b = '%-0.10{getcwd()}'
+let g:airline_section_c = '%t'
+let g:airline_powerline_fonts = 1
+
+if !exists('g:airline_symbols')
+    let g:airline_symbols = {}
+endif
+
+" unicode symbols
+let g:airline_left_sep = '»'
+let g:airline_left_sep = '▶'
+let g:airline_right_sep = '«'
+let g:airline_right_sep = '◀'
+let g:airline_symbols.linenr = '␊'
+let g:airline_symbols.linenr = '␤'
+let g:airline_symbols.linenr = '¶'
+let g:airline_symbols.branch = '⎇'
+let g:airline_symbols.paste = 'ρ'
+let g:airline_symbols.paste = 'Þ'
+let g:airline_symbols.paste = '∥'
+let g:airline_symbols.whitespace = 'Ξ'
+
+" airline symbols
+let g:airline_left_sep = ''
+let g:airline_left_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_right_alt_sep = ''
+let g:airline_symbols.branch = ''
+let g:airline_symbols.readonly = ''
+let g:airline_symbols.linenr = ''
+
+" switch tab
+nmap <C-p> <Plug>AirlineSelectPrevTab
+nmap <C-n> <Plug>AirlineSelectNextTab
+
+" editor setting
+set number relativenumber                                       " 行番号表示
+set splitbelow                                                  " 水平分割時に下に表示
+set splitright                                                  " 縦分割時を右に表示
+set noequalalways                                               " 分割時に自動調整を無効化
+set wildmenu                                                    " コマンドモードの補完
+" cursorl setting
+set ruler                                                       " カーソルの位置表示
+set cursorline                                                  " カーソルハイライト
+hi clear CursorLine
+" tab setting
+set expandtab                                                   " tabを複数のspaceに置き換え
+set tabstop=2                                                   " tabは半角2文字
+set shiftwidth=2                                                " tabの幅
+
+" clipboard setting
 set clipboard^=unnamed,unnamedplus
+
+" leader key
 let mapleader=" "
-set number relativenumber
-set backupdir=/private/tmp
-set dir=/private/tmp
-set backspace=indent,eol,start
-set confirm
-set iskeyword+=-,_
-set laststatus=3
-autocmd BufWritePre * :%s/\s\+$//ge " Deleting trailing whitespaces
-set colorcolumn=81
-" https://stackoverflow.com/a/55056589/1446551
-highlight ColorColumn ctermbg=238
-set updatetime=100
-set splitright
 
 " Indent
 set autoindent
@@ -74,210 +92,29 @@ set autoindent
 set smartindent
 set expandtab
 
-" Move selected block
-vnoremap J :m '>+1<CR>gv=gv
-vnoremap K :m '<-2<CR>gv=gv
+" Show hidden files
+let g:fern#default_hidden=1
 
-if has("autocmd")
-  filetype plugin on
-  filetype indent on
-  " when u wanna turn it off
-  " autocmd FileType html filetype indent off
+" Show file tree with Ctrl+n
+nnoremap <C-n> :Fern . -reveal=% -drawer -toggle -width=40<CR>
 
-  autocmd FileType apache     setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType conf       setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType aspvbs     setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType c          setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType cpp        setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType cs         setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType css        setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType sass       setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType scss       setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType diff       setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType html       setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType jst        setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType markdown   setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType java       setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType javascript setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType typescript setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType typescriptreact setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType json       setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType coffee     setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType perl       setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType php        setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType python     setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType cucumber   setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType puppet     setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType haml       setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType sh         setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType sql        setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType vb         setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType vim        setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType wsh        setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType xhtml      setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType xml        setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType yaml       setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType zsh        setlocal sw=4 sts=4 ts=4 et
-  autocmd FileType scala      setlocal sw=2 sts=2 ts=2 et
-  autocmd FileType go         setlocal sw=4 sts=4 ts=4 noet
-  autocmd FileType tf         setlocal sw=2 sts=2 ts=2 et
-  autocmd Filetype elixir     setlocal sw=2 sts=2 ts=2 et
-endif
-" turn off auto indent when leaving from insert mode
-autocmd InsertLeave * set nopaste
+" fzf-preview
+nmap <Leader>f [fzf-p]
+xmap <Leader>f [fzf-p]
 
-" Search
-nmap <leader>hl :set hlsearch! hlsearch?<cr>
-" hit Cap letters even when searching with non Cap
-set ignorecase
-" distinct Cap and none Cap when searching with Cap and none combined
-set smartcase
-" instant search with enter after the word
-set incsearch
-" stop at the end of the file
-set nowrapscan
-
-" airline
-" https://github.com/vim-airline/vim-airline/blob/26f922753a288df639b8d05d13ed62b9b04a26bc/doc/airline.txt#L440-L444
-let g:airline#extensions#tabline#enabled = 1
-let g:airline_section_b = '%-0.10{getcwd()}'
-let g:airline_section_c = '%t'
-
-" Defx
-nmap <silent><c-f><c-f> :Defx `expand('%:p:h')` -search=`expand('%:p')` -show-ignored-files -columns=icons:indent:filename:type -buffer-name=`'defx' . tabpagenr()`<cr>
-autocmd FileType defx call s:defx_my_settings()
-
-function! s:defx_my_settings() abort
-  nnoremap <silent><buffer><expr> <CR>
-   \ defx#do_action('drop')
-  nnoremap <silent><buffer><expr> c
-  \ defx#do_action('copy')
-  nnoremap <silent><buffer><expr> m
-  \ defx#do_action('move')
-  nnoremap <silent><buffer><expr> p
-  \ defx#do_action('paste')
-  nnoremap <silent><buffer><expr> l
-  \ defx#do_action('drop')
-  nnoremap <silent><buffer><expr> t
-  \ defx#do_action('open','tabnew')
-  nnoremap <silent><buffer><expr> E
-  \ defx#do_action('drop', 'vsplit')
-  nnoremap <silent><buffer><expr> P
-  \ defx#do_action('drop', 'pedit')
-  nnoremap <silent><buffer><expr> o
-  \ defx#do_action('open_or_close_tree')
-  nnoremap <silent><buffer><expr> K
-  \ defx#do_action('new_directory')
-  nnoremap <silent><buffer><expr> N
-  \ defx#do_action('new_file')
-  nnoremap <silent><buffer><expr> M
-  \ defx#do_action('new_multiple_files')
-  nnoremap <silent><buffer><expr> C
-  \ defx#do_action('toggle_columns',
-  \                'mark:indent:icon:filename:type:size:time')
-  nnoremap <silent><buffer><expr> S
-  \ defx#do_action('toggle_sort', 'time')
-  nnoremap <silent><buffer><expr> d
-  \ defx#do_action('remove')
-  nnoremap <silent><buffer><expr> r
-  \ defx#do_action('rename')
-  nnoremap <silent><buffer><expr> !
-  \ defx#do_action('execute_command')
-  nnoremap <silent><buffer><expr> x
-  \ defx#do_action('execute_system')
-  nnoremap <silent><buffer><expr> yy
-  \ defx#do_action('yank_path')
-  nnoremap <silent><buffer><expr> .
-  \ defx#do_action('toggle_ignored_files')
-  nnoremap <silent><buffer><expr> ;
-  \ defx#do_action('repeat')
-  nnoremap <silent><buffer><expr> h
-  \ defx#do_action('cd', ['..'])
-  nnoremap <silent><buffer><expr> ~
-  \ defx#do_action('cd')
-  nnoremap <silent><buffer><expr> q
-  \ defx#do_action('quit')
-  nnoremap <silent><buffer><expr> <Space>
-  \ defx#do_action('toggle_select') . 'j'
-  nnoremap <silent><buffer><expr> *
-  \ defx#do_action('toggle_select_all')
-  nnoremap <silent><buffer><expr> j
-  \ line('.') == line('$') ? 'gg' : 'j'
-  nnoremap <silent><buffer><expr> k
-  \ line('.') == 1 ? 'G' : 'k'
-  nnoremap <silent><buffer><expr> <C-l>
-  \ defx#do_action('redraw')
-  nnoremap <silent><buffer><expr> <C-g>
-  \ defx#do_action('print')
-  nnoremap <silent><buffer><expr> cd
-  \ defx#do_action('change_vim_cwd')
-endfunction
-
-call defx#custom#option('_', {
-      \ 'winwidth': 40,
-      \ 'split': 'vertical',
-      \ 'direction': 'topleft',
-      \ 'show_ignored_files': 1,
-      \ 'buffer_name': 'exlorer',
-      \ 'toggle': 1,
-      \ 'resume': 1,
-      \ 'columns': 'icons:indent:filename:type',
-      \ })
-call defx#custom#column('git', 'indicators', {
-  \ 'Modified'  : '✹',
-  \ 'Staged'    : '✚',
-  \ 'Untracked' : '✭',
-  \ 'Renamed'   : '➜',
-  \ 'Unmerged'  : '═',
-  \ 'Ignored'   : '☒',
-  \ 'Deleted'   : '✖',
-  \ 'Unknown'   : '?'
-  \ })
-
-" Denite
-let g:python3_host_prog = '/usr/local/bin/python3'
-call denite#custom#option('_', 'statusline', v:false) " Disabling internal statusline
-autocmd FileType denite call s:denite_my_settings()
-function! s:denite_my_settings() abort
-  nnoremap <silent><buffer><expr> <cr>
-        \ denite#do_map('do_action')
-  nnoremap <silent><buffer><expr> <leader>vs
-        \ denite#do_map('do_action', 'vsplit')
-  nnoremap <silent><buffer><expr> d
-        \ denite#do_map('do_action', 'delete')
-  nnoremap <silent><buffer><expr> p
-        \ denite#do_map('do_action', 'preview')
-  nnoremap <silent><buffer><expr> q
-        \ denite#do_map('quit')
-  nnoremap <silent><buffer><expr> i
-        \ denite#do_map('open_filter_buffer')
-  nnoremap <silent><buffer><expr> s
-        \ denite#do_map('toggle_select')
-  nnoremap <silent><buffer><c-b>
-        \ :<c-u>call <SID>denite_quickfix()<cr>
-endfunction
-" https://github.com/Shougo/denite.nvim/commit/3c7f0e1c1567d9338dea86ee190766ec64f1f510
-function! s:denite_quickfix()
-  call denite#call_map('toggle_select_all')
-  call denite#call_map('do_action', 'quickfix')
-endfunction
-
-nmap <silent><c-p> :Denite file/rec<cr>
-nmap <silent><leader>b :Denite buffer<cr>
-nmap <silent><leader>m :Denite file_mru<cr>
-nmap <silent><leader>f :Denite grep -post-action=open<cr>
-nmap <silent><leader>wf :DeniteCursorWord grep -post-action=open<cr>
-nmap <silent><leader>y :Denite neoyank<cr>
-call denite#custom#option('_', 'max_dynamic_update_candidates', 200000)
-call denite#custom#option('_', 'start_filter', 'true')
-call denite#custom#var('file/rec', 'command', ['ag', '--hidden', '--follow', '--nogroup', '-g', ''])
-call denite#custom#var('grep', {
-      \ 'command': ['ag'],
-      \ 'default_opts': [],
-      \ 'recursive_opts': [],
-      \ 'pattern_opt': [],
-      \ 'final_opts': [],
-      \ })
-" call denite#custom#source('grep', 'args', ['', '', '!']) " intereactive mode
-call denite#custom#source('grep', 'converters', ['converter/abbr_word']) " narrow by path in grep source.
+nnoremap <silent> [fzf-p]p     :<C-u>FzfPreviewFromResourcesRpc project_mru git<CR>
+nnoremap <silent> [fzf-p]gs    :<C-u>FzfPreviewGitStatusRpc<CR>
+nnoremap <silent> [fzf-p]ga    :<C-u>FzfPreviewGitActionsRpc<CR>
+nnoremap <silent> [fzf-p]b     :<C-u>FzfPreviewBuffersRpc<CR>
+nnoremap <silent> [fzf-p]B     :<C-u>FzfPreviewAllBuffersRpc<CR>
+nnoremap <silent> [fzf-p]o     :<C-u>FzfPreviewFromResourcesRpc buffer project_mru<CR>
+nnoremap <silent> [fzf-p]<C-o> :<C-u>FzfPreviewJumpsRpc<CR>
+nnoremap <silent> [fzf-p]g;    :<C-u>FzfPreviewChangesRpc<CR>
+nnoremap <silent> [fzf-p]/     :<C-u>FzfPreviewLinesRpc --add-fzf-arg=--no-sort --add-fzf-arg=--query="'"<CR>
+nnoremap <silent> [fzf-p]*     :<C-u>FzfPreviewLinesRpc --add-fzf-arg=--no-sort --add-fzf-arg=--query="'<C-r>=expand('<cword>')<CR>"<CR>
+nnoremap          [fzf-p]gr    :<C-u>FzfPreviewProjectGrepRpc<Space>
+xnoremap          [fzf-p]gr    "sy:FzfPreviewProjectGrepRpc<Space>-F<Space>"<C-r>=substitute(substitute(@s, '\n', '', 'g'), '/', '\\/', 'g')<CR>"
+nnoremap <silent> [fzf-p]t     :<C-u>FzfPreviewBufferTagsRpc<CR>
+nnoremap <silent> [fzf-p]q     :<C-u>FzfPreviewQuickFixRpc<CR>
+nnoremap <silent> [fzf-p]l     :<C-u>FzfPreviewLocationListRpc<CR>
 
